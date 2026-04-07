@@ -39,10 +39,10 @@
     };
 
     platform-tools = {
-      version = "v1.52";
-      agaveVersion = "3.1.6";
+      version = "v1.48";
+      agaveVersion = "2.3.13";
       sbfSdk = {
-        hash = "sha256-4iV6NhfisZuLlwwhIi4OIbxj8Nzx+EFcG5cmK36fFAc=";
+        hash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
       };
     };
   };
