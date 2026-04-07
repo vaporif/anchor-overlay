@@ -1,5 +1,4 @@
 diff --git a/cli/src/lib.rs b/cli/src/lib.rs
-index f080fd4..0000000 100644
 --- a/cli/src/lib.rs
 +++ b/cli/src/lib.rs
 @@ -918,7 +918,7 @@ type RestoreToolchainCallbacks = Vec<Box<dyn FnOnce() -> Result<()>>>;
@@ -153,7 +152,6 @@ index f080fd4..0000000 100644
          }
      }
 diff --git a/idl/src/build.rs b/idl/src/build.rs
-index 7b5da24..0000000 100644
 --- a/idl/src/build.rs
 +++ b/idl/src/build.rs
 @@ -142,7 +142,6 @@ fn build(
