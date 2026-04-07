@@ -23,12 +23,13 @@
 
     packages = forAllSystems (system: let
       pkgs = pkgsFor system;
-    in {
-      default = pkgs.anchor."0.32.1".buildAnchorProgram {
+      buildArgs = {
         pname = "my-program";
         src = ./.;
         cargoLock = {lockFile = ./Cargo.lock;};
       };
+    in {
+      default = pkgs.anchor."0.32.1".buildAnchorProgram buildArgs;
     });
 
     devShells = forAllSystems (system: let
