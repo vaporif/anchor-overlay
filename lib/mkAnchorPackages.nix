@@ -4,6 +4,8 @@
   craneLib,
   versionConfig,
   platformToolsVersion ? versionConfig.platform-tools.version,
+  agaveVersion ? versionConfig.platform-tools.agaveVersion,
+  sbfSdkHash ? versionConfig.platform-tools.sbfSdk.hash,
 }: let
   inherit (pkgs) callPackage;
 
@@ -15,8 +17,7 @@
   solana-platform-tools = callPackage ../pkgs/solana-platform-tools.nix {
     version = platformToolsVersion;
     inherit (ptConfig) archives;
-    agaveVersion = versionConfig.platform-tools.agaveVersion;
-    sbfSdkHash = versionConfig.platform-tools.sbfSdk.hash;
+    inherit agaveVersion sbfSdkHash;
   };
 
   solana-rust = callPackage ../pkgs/solana-rust.nix {
@@ -37,11 +38,19 @@
     builtins.mapAttrs (
       ptVersion: _:
         import ./mkAnchorPackages.nix {
-          inherit pkgs rust-bin craneLib versionConfig;
+          inherit pkgs rust-bin craneLib versionConfig agaveVersion sbfSdkHash;
           platformToolsVersion = ptVersion;
         }
     )
     platformToolsVersions;
 in {
   inherit anchor-cli solana-rust solana-platform-tools buildAnchorProgram withPlatformTools;
+
+  withAgave = {
+    agaveVersion,
+    sbfSdkHash,
+  }:
+    import ./mkAnchorPackages.nix {
+      inherit pkgs rust-bin craneLib versionConfig platformToolsVersion agaveVersion sbfSdkHash;
+    };
 }

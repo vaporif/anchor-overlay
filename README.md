@@ -22,7 +22,7 @@ Multiple Anchor versions are available through the overlay under `pkgs.anchor.<v
 | Version | Anchor | Agave | Platform Tools (default) |
 |---------|--------|-------|--------------------------|
 | `1.0.0` (default) | 1.0.0 | 3.1.10 | v1.52 |
-| `0.32.1` | 0.32.1 | 3.1.6 | v1.52 |
+| `0.32.1` | 0.32.1 | 2.3.13 | v1.48 |
 
 ```nix
 # Via overlay
@@ -39,20 +39,30 @@ pkgs.buildAnchorProgram # = pkgs.anchor."1.0.0".buildAnchorProgram
 Each Anchor version ships with a default platform-tools version, but you can override it with `withPlatformTools`. Supported versions: v1.48 through v1.54.
 
 ```nix
-# Use 0.32.1 with platform-tools v1.48 instead of the default v1.52
-pkgs.anchor."0.32.1".withPlatformTools."v1.48".buildAnchorProgram {
+# Use 1.0.0 with platform-tools v1.48 instead of the default v1.52
+pkgs.anchor."1.0.0".withPlatformTools."v1.48".buildAnchorProgram {
   pname = "my-program";
   src = ./.;
   cargoLock = { lockFile = ./Cargo.lock; };
 };
+```
 
-# Or in a devShell
-pkgs.mkShell {
-  packages = with pkgs.anchor."0.32.1".withPlatformTools."v1.48"; [
-    anchor-cli
-    solana-rust
-  ];
-};
+### Configurable Agave version (SBF SDK)
+
+Each Anchor version defaults to a specific Agave version for the SBF SDK. Override it with `withAgave`:
+
+```nix
+# Use 1.0.0 with a different Agave version and SBF SDK hash
+pkgs.anchor."1.0.0".withAgave {
+  agaveVersion = "2.3.13";
+  sbfSdkHash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
+}
+
+# Combine with withPlatformTools
+pkgs.anchor."1.0.0".withPlatformTools."v1.48".withAgave {
+  agaveVersion = "2.3.13";
+  sbfSdkHash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
+}
 ```
 
 ## Installation
