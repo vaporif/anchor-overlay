@@ -1,5 +1,5 @@
 {
-  default-version = "0.32.1";
+  default-version = "1.0.0";
 
   "1.0.0" = {
     anchor = {

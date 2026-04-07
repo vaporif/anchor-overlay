@@ -21,8 +21,8 @@ Multiple Anchor versions are available through the overlay under `pkgs.anchor.<v
 
 | Version | Anchor | Agave | Platform Tools |
 |---------|--------|-------|----------------|
-| `1.0.0` | 1.0.0 | 3.1.10 | v1.52 |
-| `0.32.1` (default) | 0.32.1 | 3.1.6 | v1.52 |
+| `1.0.0` (default) | 1.0.0 | 3.1.10 | v1.52 |
+| `0.32.1` | 0.32.1 | 3.1.6 | v1.52 |
 
 ```nix
 # Via overlay
@@ -30,8 +30,8 @@ pkgs.anchor."1.0.0".anchor-cli
 pkgs.anchor."0.32.1".anchor-cli
 
 # Top-level aliases point to the default version
-pkgs.anchor-cli         # = pkgs.anchor."0.32.1".anchor-cli
-pkgs.buildAnchorProgram # = pkgs.anchor."0.32.1".buildAnchorProgram
+pkgs.anchor-cli         # = pkgs.anchor."1.0.0".anchor-cli
+pkgs.buildAnchorProgram # = pkgs.anchor."1.0.0".buildAnchorProgram
 ```
 
 ## Installation
