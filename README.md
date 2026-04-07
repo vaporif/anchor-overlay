@@ -61,11 +61,22 @@ solana --version
         overlays = [ anchor-overlay.overlays.default ];
       };
     in {
-      devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs.anchor."1.0.0"; [
-          anchor-cli
-          solana-rust
-        ];
+      devShells.${system} = {
+        # Default version (1.0.0)
+        default = pkgs.mkShell {
+          packages = [
+            pkgs.anchor-cli
+            pkgs.solana-rust
+          ];
+        };
+
+        # Specific version (0.32.1)
+        legacy = pkgs.mkShell {
+          packages = with pkgs.anchor."0.32.1"; [
+            anchor-cli
+            solana-rust
+          ];
+        };
       };
     };
 }
@@ -90,10 +101,20 @@ solana --version
         overlays = [ anchor-overlay.overlays.default ];
       };
     in {
-      packages.${system}.default = pkgs.anchor."1.0.0".buildAnchorProgram {
-        pname = "my-program";
-        src = ./.;
-        cargoLock = { lockFile = ./Cargo.lock; };
+      packages.${system} = {
+        # Default version (1.0.0)
+        default = pkgs.buildAnchorProgram {
+          pname = "my-program";
+          src = ./.;
+          cargoLock = { lockFile = ./Cargo.lock; };
+        };
+
+        # Specific version (0.32.1)
+        legacy = pkgs.anchor."0.32.1".buildAnchorProgram {
+          pname = "my-program";
+          src = ./.;
+          cargoLock = { lockFile = ./Cargo.lock; };
+        };
       };
     };
 }
