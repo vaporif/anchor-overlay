@@ -1,0 +1,27 @@
+[toolchain]
+anchor_version = "0.32.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[clusters]
+localnet = "http://localhost:8899"
+# devnet = "https://api.devnet.solana.com"
+# testnet = "https://api.testnet.solana.com"
+# mainnet = "https://api.mainnet-beta.solana.com"
+
+[programs.localnet]
+my_program = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false
