@@ -5,6 +5,11 @@
   autoPatchelfHook,
   libgcc,
   zlib,
+  openssl,
+  ncurses,
+  libxml2,
+  xz,
+  python310,
   version,
   archives,
   agaveVersion,
@@ -21,7 +26,15 @@
       inherit (archive) hash;
     };
     nativeBuildInputs = lib.optionals stdenv.isLinux [autoPatchelfHook];
-    buildInputs = lib.optionals stdenv.isLinux [libgcc.lib zlib];
+    buildInputs = lib.optionals stdenv.isLinux [
+      libgcc.lib
+      zlib
+      openssl
+      ncurses
+      libxml2
+      xz
+      python310
+    ];
     unpackPhase = ''
       mkdir -p $out
       tar -xjf $src -C $out
