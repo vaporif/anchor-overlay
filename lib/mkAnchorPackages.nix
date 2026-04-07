@@ -32,7 +32,7 @@
   };
 
   buildAnchorProgram = callPackage ../pkgs/buildAnchorProgram.nix {
-    inherit solana-platform-tools anchor-cli;
+    inherit solana-platform-tools solana-cli anchor-cli;
   };
 in {
   inherit solana-cli anchor-cli solana-rust solana-platform-tools buildAnchorProgram;

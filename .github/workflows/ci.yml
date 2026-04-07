@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    name: fmt
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Check formatting
+        run: nix fmt -- --check .
+
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        anchor-version: ["0.32.1"]
+        include:
+          - runner: ubuntu-latest
+            system: x86_64-linux
+          - runner: ubuntu-24.04-arm
+            system: aarch64-linux
+          - runner: macos-latest
+            system: aarch64-darwin
+
+    runs-on: ${{ matrix.runner }}
+    name: check (${{ matrix.system }}, ${{ matrix.anchor-version }})
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build anchor-cli
+        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".anchor-cli' -L
+
+      - name: Build solana-cli
+        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-cli' -L
+
+      - name: Build solana-rust
+        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-rust' -L
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        anchor-version: ["0.32.1"]
+        include:
+          - runner: ubuntu-latest
+            system: x86_64-linux
+          - runner: ubuntu-24.04-arm
+            system: aarch64-linux
+          - runner: macos-latest
+            system: aarch64-darwin
+
+    runs-on: ${{ matrix.runner }}
+    name: build (${{ matrix.system }}, ${{ matrix.anchor-version }})
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build test program via overlay
+        run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
+
+      - name: Build test program via devshell
+        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build'

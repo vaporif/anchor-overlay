@@ -4,6 +4,7 @@
   cargo,
   rustPlatform,
   solana-platform-tools,
+  solana-cli,
   anchor-cli,
   jq,
 }: {
@@ -22,6 +23,7 @@ stdenv.mkDerivation ({
     nativeBuildInputs = [
       cargo
       rustPlatform.cargoSetupHook
+      solana-cli
       anchor-cli
       jq
     ];
