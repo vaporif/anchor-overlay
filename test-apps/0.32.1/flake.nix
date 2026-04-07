@@ -30,7 +30,6 @@
       };
     in {
       default = pkgs.anchor."0.32.1".buildAnchorProgram buildArgs;
-      pt-v1_52 = pkgs.anchor."0.32.1".withPlatformTools."v1.52".buildAnchorProgram buildArgs;
     });
 
     devShells = forAllSystems (system: let
