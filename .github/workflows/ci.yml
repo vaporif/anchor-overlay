@@ -19,14 +19,14 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - name: Check formatting
-        run: nix fmt -- --check .
+        run: nix flake check
 
   check:
     strategy:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["0.32.1"]
+        anchor-version: ["0.32.1", "1.0.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["0.32.1"]
+        anchor-version: ["0.32.1", "1.0.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -75,4 +75,4 @@ jobs:
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
 
       - name: Build test program via devshell
-        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build'
+        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build --ignore-keys'
