@@ -23,6 +23,7 @@
     };
     nativeBuildInputs = lib.optionals stdenv.isLinux [autoPatchelfHook];
     buildInputs = lib.optionals stdenv.isLinux [libgcc.lib zlib openssl];
+    # liblldb.so (LLVM debugger) has many deps not needed for SBF compilation
     autoPatchelfIgnoreMissingDeps = [
       "libpython3.10.so.1.0"
       "libpanel.so.6"
@@ -30,6 +31,7 @@
       "libtinfo.so.6"
       "libxml2.so.2"
       "liblzma.so.5"
+      "libedit.so.2"
     ];
     unpackPhase = ''
       mkdir -p $out

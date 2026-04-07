@@ -52,6 +52,12 @@
       };
     });
 
+    checks = perSystemPkgs (pkgs: {
+      formatting = pkgs.runCommand "check-formatting" {} ''
+        ${pkgs.alejandra}/bin/alejandra --check ${inputs.self} > $out
+      '';
+    });
+
     formatter = perSystemPkgs (pkgs: pkgs.alejandra);
   };
 }
