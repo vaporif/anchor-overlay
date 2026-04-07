@@ -44,9 +44,39 @@
   cargoShim = writeShellScriptBin "cargo" ''
     if [[ "''${1:-}" == +* ]]; then
       shift
+      export PATH="''${_NIX_IDL_TOOLCHAIN}/bin:$PATH"
       exec ''${_NIX_IDL_TOOLCHAIN}/bin/cargo "$@"
     fi
+    # cargo parses "build-sbf" as "build" + "-sbf", so intercept and call directly
+    if [[ "''${1:-}" == "build-sbf" || "''${1:-}" == "test-sbf" ]]; then
+      subcmd="cargo-$1"
+      shift
+      exec "$subcmd" "$@"
+    fi
+    export PATH="''${_NIX_STABLE_TOOLCHAIN}/bin:$PATH"
     exec ''${_NIX_STABLE_TOOLCHAIN}/bin/cargo "$@"
+  '';
+
+  pt = solana-platform-tools.platformTools;
+
+  # Thin cargo-build-sbf shim that uses platform-tools directly
+  cargoBuildSbf = writeShellScriptBin "cargo-build-sbf" ''
+    export PATH="${pt}/rust/bin:$PATH"
+    MANIFEST_PATH=""
+    EXTRA_ARGS=()
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --manifest-path) MANIFEST_PATH="$2"; shift 2 ;;
+        --no-rustup-override|--skip-tools-install) shift ;;
+        --) shift; EXTRA_ARGS+=("$@"); break ;;
+        *) EXTRA_ARGS+=("$1"); shift ;;
+      esac
+    done
+    exec cargo build \
+      ''${MANIFEST_PATH:+--manifest-path "$MANIFEST_PATH"} \
+      --target sbf-solana-solana \
+      --release \
+      "''${EXTRA_ARGS[@]}"
   '';
 
   commonArgs = {
@@ -84,7 +114,7 @@ in
     nativeBuildInputs = [makeWrapper];
     postBuild = ''
       wrapProgram $out/bin/anchor \
-        --prefix PATH : "${cargoShim}/bin" \
+        --prefix PATH : "${cargoBuildSbf}/bin:${cargoShim}/bin" \
         --set _NIX_IDL_TOOLCHAIN "${rustIdl}" \
         --set _NIX_STABLE_TOOLCHAIN "${rustStable}" \
         --set SBF_SDK_PATH "${solana-platform-tools.sbfSdk}"
