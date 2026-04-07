@@ -75,4 +75,4 @@ jobs:
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
 
       - name: Build test program via devshell
-        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build -- --ignore-keys'
+        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build --ignore-keys'
