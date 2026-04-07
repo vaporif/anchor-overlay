@@ -1,17 +1,115 @@
-# Solana Nix
+# anchor-overlay
 
-Solana and Anchor nix setup for compiling programs.
+[![CI](https://github.com/vaporif/anchor-overlay/actions/workflows/ci.yml/badge.svg)](https://github.com/vaporif/anchor-overlay/actions/workflows/ci.yml)
 
-## Dev shell
+*Pure and reproducible* Nix packaging of [Anchor](https://github.com/solana-foundation/anchor) and [Solana](https://github.com/anza-xyz/agave) tooling. Provides an overlay, flake packages, and a builder function for compiling Anchor programs — no rustup required.
 
-`anchor` and `solana` binaries are available in the dev shell
+Supported platforms: `x86_64-linux`, `aarch64-linux`, `x86_64-darwin`, `aarch64-darwin`.
 
-## Rust nightly
+## Packages
 
-Unfortunately anchor depends on nightly rust complier (a very unstable and common practice in rust projects)
+| Package | Description |
+|---------|-------------|
+| `anchor-cli` | Anchor CLI, built from source with Crane |
+| `solana-cli` | Agave/Solana validator and CLI tools |
+| `solana-rust` | Rust toolchain configured for Solana BPF/SBF compilation |
+| `solana-platform-tools` | Pre-built Solana platform tools (LLVM, Rust, etc.) |
+| `buildAnchorProgram` | Builder function to compile Anchor programs as pure Nix derivations |
 
-## Changing solana version
+## Multi-version support
 
-```sh
-cargo update -p solana-program@1.18.12 --precise 1.17.28
+Multiple Anchor versions are available through the overlay under `pkgs.anchor.<version>`:
+
+| Version | Anchor | Agave | Platform Tools |
+|---------|--------|-------|----------------|
+| `0.32.1` (default) | 0.32.1 | 3.1.6 | v1.52 |
+
+```nix
+# Via overlay
+pkgs.anchor."0.32.1".anchor-cli
+pkgs.anchor."0.32.1".solana-rust
+
+# Top-level aliases point to the default version
+pkgs.anchor-cli         # = pkgs.anchor."0.32.1".anchor-cli
+pkgs.buildAnchorProgram # = pkgs.anchor."0.32.1".buildAnchorProgram
 ```
+
+## Installation
+
+### Quick start
+
+```bash
+nix develop github:vaporif/anchor-overlay
+anchor --version
+solana --version
+```
+
+### Flake overlay
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    anchor-overlay.url = "github:vaporif/anchor-overlay";
+  };
+
+  outputs = { nixpkgs, anchor-overlay, ... }:
+    let
+      system = "aarch64-darwin";
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ anchor-overlay.overlays.default ];
+      };
+    in {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs.anchor."0.32.1"; [
+          anchor-cli
+          solana-cli
+          solana-rust
+        ];
+      };
+    };
+}
+```
+
+## Building Anchor programs as Nix derivations
+
+`buildAnchorProgram` compiles Anchor programs as pure Nix derivations. No network access at build time.
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    anchor-overlay.url = "github:vaporif/anchor-overlay";
+  };
+
+  outputs = { nixpkgs, anchor-overlay, ... }:
+    let
+      system = "aarch64-darwin";
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ anchor-overlay.overlays.default ];
+      };
+    in {
+      packages.${system}.default = pkgs.anchor."0.32.1".buildAnchorProgram {
+        pname = "my-program";
+        src = ./.;
+        cargoLock = { lockFile = ./Cargo.lock; };
+      };
+    };
+}
+```
+
+```bash
+nix build
+```
+
+See [`test-apps/0.32.1/`](test-apps/0.32.1/) for a complete working example.
+
+## Custom Anchor versions
+
+Use `lib.mkAnchorPackages` to build any Anchor version not included in the overlay. Copy an existing entry from [`lib/versions.nix`](lib/versions.nix) as a template.
+
+## License
+
+MIT
