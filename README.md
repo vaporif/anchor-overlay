@@ -11,7 +11,6 @@ Supported platforms: `x86_64-linux`, `aarch64-linux`, `x86_64-darwin`, `aarch64-
 | Package | Description |
 |---------|-------------|
 | `anchor-cli` | Anchor CLI, built from source with Crane |
-| `solana-cli` | Agave/Solana validator and CLI tools |
 | `solana-rust` | Rust toolchain configured for Solana BPF/SBF compilation |
 | `solana-platform-tools` | Pre-built Solana platform tools (LLVM, Rust, etc.) |
 | `buildAnchorProgram` | Builder function to compile Anchor programs as pure Nix derivations |
@@ -22,12 +21,13 @@ Multiple Anchor versions are available through the overlay under `pkgs.anchor.<v
 
 | Version | Anchor | Agave | Platform Tools |
 |---------|--------|-------|----------------|
+| `1.0.0` | 1.0.0 | 3.1.10 | v1.52 |
 | `0.32.1` (default) | 0.32.1 | 3.1.6 | v1.52 |
 
 ```nix
 # Via overlay
+pkgs.anchor."1.0.0".anchor-cli
 pkgs.anchor."0.32.1".anchor-cli
-pkgs.anchor."0.32.1".solana-rust
 
 # Top-level aliases point to the default version
 pkgs.anchor-cli         # = pkgs.anchor."0.32.1".anchor-cli
@@ -62,9 +62,8 @@ solana --version
       };
     in {
       devShells.${system}.default = pkgs.mkShell {
-        packages = with pkgs.anchor."0.32.1"; [
+        packages = with pkgs.anchor."1.0.0"; [
           anchor-cli
-          solana-cli
           solana-rust
         ];
       };
@@ -91,7 +90,7 @@ solana --version
         overlays = [ anchor-overlay.overlays.default ];
       };
     in {
-      packages.${system}.default = pkgs.anchor."0.32.1".buildAnchorProgram {
+      packages.${system}.default = pkgs.anchor."1.0.0".buildAnchorProgram {
         pname = "my-program";
         src = ./.;
         cargoLock = { lockFile = ./Cargo.lock; };
@@ -104,7 +103,7 @@ solana --version
 nix build
 ```
 
-See [`test-apps/0.32.1/`](test-apps/0.32.1/) for a complete working example.
+See [`test-apps/`](test-apps/) for complete working examples.
 
 ## Custom Anchor versions
 
