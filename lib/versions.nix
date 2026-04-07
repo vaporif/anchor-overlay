@@ -15,30 +15,6 @@
       idlRustVersion = "1.89.0";
     };
 
-    agave = {
-      version = "3.1.6";
-      src = {
-        owner = "anza-xyz";
-        repo = "agave";
-        rev = "v3.1.6";
-        hash = "sha256-pIvShCRy1OQcFwSkXZ/lLF+2LoAd2wyAQfyyUtj9La0=";
-        fetchSubmodules = true;
-      };
-      rustVersion = "1.86.0";
-      solanaPkgs = [
-        "cargo-build-sbf"
-        "cargo-test-sbf"
-        "solana"
-        "solana-faucet"
-        "solana-genesis"
-        "solana-gossip"
-        "solana-keygen"
-        "solana-test-validator"
-        "agave-install"
-        "agave-validator"
-      ];
-    };
-
     platform-tools = {
       version = "v1.52";
       agaveVersion = "3.1.6";

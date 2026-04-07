@@ -37,7 +37,6 @@
       default = pkgs.mkShell {
         packages = with pkgs.anchor."0.32.1"; [
           anchor-cli
-          solana-cli
           solana-rust
         ];
       };

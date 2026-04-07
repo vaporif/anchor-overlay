@@ -4,7 +4,6 @@
   cargo,
   rustPlatform,
   solana-platform-tools,
-  solana-cli,
   anchor-cli,
   jq,
 }: {
@@ -23,7 +22,6 @@ stdenv.mkDerivation ({
     nativeBuildInputs = [
       cargo
       rustPlatform.cargoSetupHook
-      solana-cli
       anchor-cli
       jq
     ];
@@ -38,15 +36,19 @@ stdenv.mkDerivation ({
     in ''
       runHook preBuild
 
-      # Build the SBF program using platform-tools rustc
       export SBF_SDK_PATH="${pt.sbfSdk}"
       export PATH="${pt.platformTools}/rust/bin:$PATH"
 
-      cargo-build-sbf \
+      cargo build \
         --manifest-path programs/${programName}/Cargo.toml \
-        --no-rustup-override \
-        --skip-tools-install \
+        --target sbf-solana-solana \
+        --release \
         ${extraArgs}
+
+      # Move artifacts to target/deploy/ (anchor convention)
+      mkdir -p target/deploy
+      cp target/sbf-solana-solana/release/${builtins.replaceStrings ["-"] ["_"] programName}.so \
+        target/deploy/
 
       runHook postBuild
     '';
@@ -58,10 +60,8 @@ stdenv.mkDerivation ({
 
       mkdir -p $out
 
-      # Copy the compiled SBF program
       cp target/deploy/${deployName}.so $out/
 
-      # Copy the keypair if it exists
       if [ -f target/deploy/${deployName}-keypair.json ]; then
         cp target/deploy/${deployName}-keypair.json $out/
       fi

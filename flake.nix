@@ -35,7 +35,7 @@
     packages = perSystemPkgs (pkgs: let
       default = pkgs.anchor.${versions.default-version};
     in {
-      inherit (default) solana-cli anchor-cli solana-rust;
+      inherit (default) anchor-cli solana-rust;
       default = default.anchor-cli;
     });
 
@@ -45,7 +45,6 @@
       default = pkgs.mkShell {
         packages = [
           default.anchor-cli
-          default.solana-cli
           default.solana-rust
           pkgs.nodejs
           pkgs.yarn
