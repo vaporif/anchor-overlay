@@ -11,7 +11,7 @@
         fetchSubmodules = true;
       };
       patches = ["1.0.0.patch"];
-      rustVersion = "1.86.0";
+      rustVersion = "1.88.0";
       idlRustVersion = "1.89.0";
     };
 
