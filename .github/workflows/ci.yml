@@ -62,6 +62,8 @@ jobs:
             system: aarch64-linux
           - runner: macos-latest
             system: aarch64-darwin
+          - anchor-version: "1.0.0"
+            build-flags: "--ignore-keys"
 
     runs-on: ${{ matrix.runner }}
     name: build (${{ matrix.system }}, ${{ matrix.anchor-version }})
@@ -75,4 +77,4 @@ jobs:
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
 
       - name: Build test program via devshell
-        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build --ignore-keys'
+        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build ${{ matrix.build-flags }}'
