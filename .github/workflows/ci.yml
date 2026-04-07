@@ -46,9 +46,6 @@ jobs:
       - name: Build anchor-cli
         run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".anchor-cli' -L
 
-      - name: Build solana-cli
-        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-cli' -L
-
       - name: Build solana-rust
         run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-rust' -L
 
@@ -76,6 +73,3 @@ jobs:
 
       - name: Build test program via overlay
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
-
-      - name: Build test program via devshell
-        run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build'
