@@ -68,6 +68,7 @@
       case "$1" in
         --manifest-path) MANIFEST_PATH="$2"; shift 2 ;;
         --no-rustup-override|--skip-tools-install) shift ;;
+        --tools-version) shift 2 ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
       esac
