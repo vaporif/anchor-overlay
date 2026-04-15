@@ -30,6 +30,8 @@
     anchorConfig = versionConfig.anchor;
   };
 
+  agave-cli = callPackage ../pkgs/agave-cli.nix {inherit agaveVersion;};
+
   buildAnchorProgram = callPackage ../pkgs/buildAnchorProgram.nix {
     inherit solana-platform-tools anchor-cli;
   };
@@ -44,7 +46,7 @@
     )
     platformToolsVersions;
 in {
-  inherit anchor-cli solana-rust solana-platform-tools buildAnchorProgram withPlatformTools;
+  inherit anchor-cli solana-rust solana-platform-tools buildAnchorProgram agave-cli withPlatformTools;
 
   withAgave = {
     agaveVersion,

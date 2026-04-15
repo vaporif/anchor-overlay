@@ -79,6 +79,37 @@ jobs:
       - name: Build test program via devshell
         run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build ${{ matrix.build-flags }}'
 
+  e2e:
+    needs: [build]
+    strategy:
+      fail-fast: false
+      matrix:
+        anchor-version: ["0.32.1", "1.0.0"]
+        arch:
+          - runner: ubuntu-latest
+            system: x86_64-linux
+        include:
+          - anchor-version: "1.0.0"
+            build-flags: "--ignore-keys"
+
+    runs-on: ${{ matrix.arch.runner }}
+    name: e2e (${{ matrix.arch.system }}, ${{ matrix.anchor-version }})
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build program via overlay
+        run: |
+          PROGRAM_SO_PATH=$(nix build ./test-apps/${{ matrix.anchor-version }}#my-program --print-out-paths --no-link)/my_program.so
+          echo "PROGRAM_SO_PATH=$PROGRAM_SO_PATH" >> $GITHUB_ENV
+
+      - name: Run e2e tests
+        run: |
+          nix develop ./test-apps/${{ matrix.anchor-version }} -c \
+            cargo test --manifest-path test-apps/${{ matrix.anchor-version }}/Cargo.toml --package e2e-tests --lib -- --nocapture
+
   check-platform-tools-override:
     strategy:
       fail-fast: false

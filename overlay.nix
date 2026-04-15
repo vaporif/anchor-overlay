@@ -22,5 +22,5 @@ in {
   inherit anchor;
 
   # Backwards-compatible top-level aliases from default version
-  inherit (defaultPkgs) anchor-cli solana-rust solana-platform-tools buildAnchorProgram;
+  inherit (defaultPkgs) anchor-cli solana-rust solana-platform-tools buildAnchorProgram agave-cli;
 }

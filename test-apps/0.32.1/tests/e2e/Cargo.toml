@@ -1,0 +1,13 @@
+[package]
+name = "e2e-tests"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "e2e_tests"
+
+[dev-dependencies]
+solana-sdk = "~2.2"
+solana-client = "~2.2"
+sha2 = "0.10"
