@@ -30,15 +30,22 @@
       };
     in {
       default = pkgs.anchor."0.32.1".buildAnchorProgram buildArgs;
+      my-program = pkgs.anchor."0.32.1".buildAnchorProgram buildArgs;
     });
 
     devShells = forAllSystems (system: let
       pkgs = pkgsFor system;
     in {
       default = pkgs.mkShell {
-        packages = with pkgs.anchor."0.32.1"; [
-          anchor-cli
-        ];
+        buildInputs = [pkgs.openssl];
+        nativeBuildInputs = [pkgs.pkg-config];
+        packages =
+          (with pkgs.anchor."0.32.1"; [
+            anchor-cli
+          ])
+          ++ pkgs.lib.optionals (builtins.elem system ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]) [
+            pkgs.anchor."0.32.1".agave-cli
+          ];
       };
     });
   };

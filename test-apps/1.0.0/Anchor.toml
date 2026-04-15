@@ -9,7 +9,7 @@ skip-lint = false
 localnet = "http://localhost:8899"
 
 [programs.localnet]
-my_program = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+my_program = "GVXHCbeuKKgTs2EbD7jtZr63DeNggWB4X5w6tHBnnpeS"
 
 [registry]
 url = "https://api.apr.dev"

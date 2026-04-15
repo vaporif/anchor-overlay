@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["programs/*"]
+members = ["programs/*", "tests/e2e"]
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }
