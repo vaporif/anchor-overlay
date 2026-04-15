@@ -30,26 +30,31 @@ mod tests {
 
     struct TestValidator {
         child: Child,
+        ledger_path: String,
     }
 
     impl TestValidator {
         fn start(rpc_port: u16, faucet_port: u16, program_id: &Pubkey, so_path: &str) -> Self {
+            let ledger_path = format!("/tmp/test-ledger-{rpc_port}");
+            let ws_port = find_free_port();
             let child = Command::new("solana-test-validator")
                 .arg("--rpc-port")
                 .arg(rpc_port.to_string())
                 .arg("--faucet-port")
                 .arg(faucet_port.to_string())
+                .arg("--dynamic-port-range")
+                .arg(format!("{ws_port}-{}", ws_port + 20))
                 .arg("--bpf-program")
                 .arg(program_id.to_string())
                 .arg(so_path)
                 .arg("--reset")
                 .arg("--quiet")
                 .arg("--ledger")
-                .arg(format!("/tmp/test-ledger-{rpc_port}"))
+                .arg(&ledger_path)
                 .spawn()
                 .expect("failed to start solana-test-validator");
 
-            TestValidator { child }
+            TestValidator { child, ledger_path }
         }
     }
 
@@ -57,6 +62,7 @@ mod tests {
         fn drop(&mut self) {
             let _ = self.child.kill();
             let _ = self.child.wait();
+            let _ = fs::remove_dir_all(&self.ledger_path);
         }
     }
 

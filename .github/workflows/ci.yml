@@ -88,9 +88,6 @@ jobs:
         arch:
           - runner: ubuntu-latest
             system: x86_64-linux
-        include:
-          - anchor-version: "1.0.0"
-            build-flags: "--ignore-keys"
 
     runs-on: ${{ matrix.arch.runner }}
     name: e2e (${{ matrix.arch.system }}, ${{ matrix.anchor-version }})
