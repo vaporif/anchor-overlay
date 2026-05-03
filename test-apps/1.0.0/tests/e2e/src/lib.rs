@@ -43,7 +43,7 @@ mod tests {
                 .arg("--faucet-port")
                 .arg(faucet_port.to_string())
                 .arg("--dynamic-port-range")
-                .arg(format!("{ws_port}-{}", ws_port + 20))
+                .arg(format!("{ws_port}-{}", ws_port + 30))
                 .arg("--bpf-program")
                 .arg(program_id.to_string())
                 .arg(so_path)
