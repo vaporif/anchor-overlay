@@ -4,6 +4,8 @@
   fetchurl,
   autoPatchelfHook,
   zlib,
+  openssl,
+  systemdLibs,
   agaveVersion,
 }: let
   platform =
@@ -42,7 +44,18 @@ in
     sourceRoot = "solana-release";
 
     nativeBuildInputs = lib.optionals stdenv.isLinux [autoPatchelfHook];
-    buildInputs = lib.optionals stdenv.isLinux [zlib stdenv.cc.cc.lib];
+    buildInputs = lib.optionals stdenv.isLinux [
+      zlib
+      stdenv.cc.cc.lib
+      openssl
+      systemdLibs
+    ];
+
+    autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.isLinux [
+      "libOpenCL.so.1"
+      "libsgx_uae_service.so"
+      "libsgx_urts.so"
+    ];
 
     installPhase = ''
       mkdir -p $out
