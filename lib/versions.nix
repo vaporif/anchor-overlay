@@ -7,7 +7,7 @@
         owner = "solana-foundation";
         repo = "anchor";
         tag = "v1.0.2";
-        hash = "sha256-Y5452JSBAH+GkAJ57cDjup3vyMzPac+xvNAE+W81Ong=";
+        hash = "sha256-J8q+oNT6x36LlTO/szlkxIcT5oFJ3y8b3YyqwBjDYX8=";
         fetchSubmodules = true;
       };
       patches = ["1.0.2.patch"];
