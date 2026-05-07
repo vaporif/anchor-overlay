@@ -12,7 +12,7 @@ localnet = "http://localhost:8899"
 # mainnet = "https://api.mainnet-beta.solana.com"
 
 [programs.localnet]
-my_program = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+my_program = "GhFvtLtEoY6ZPKGA4S4uWJH3vaJMgBY5aWRLK5XNmEVf"
 
 [registry]
 url = "https://api.apr.dev"
