@@ -2,8 +2,7 @@
 
 [![CI](https://github.com/vaporif/anchor-overlay/actions/workflows/ci.yml/badge.svg)](https://github.com/vaporif/anchor-overlay/actions/workflows/ci.yml)
 
-*Pure and reproducible* Nix packaging of [Anchor](https://github.com/solana-foundation/anchor) and [Solana](https://github.com/anza-xyz/agave) tooling. Provides an overlay, flake packages, and a builder function for compiling Anchor programs — no rustup required.
-**Covered by e2e in CI so safe to use**
+*Pure and reproducible* Nix packaging of [Anchor](https://github.com/solana-foundation/anchor) and [Solana](https://github.com/anza-xyz/agave) tooling. Provides an overlay, devshell, flake packages, and a builder function for compiling Anchor programs — no rustup required.
 
 Supported platforms: `x86_64-linux`, `aarch64-linux`, `x86_64-darwin`, `aarch64-darwin`.
 
