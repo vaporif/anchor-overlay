@@ -21,17 +21,17 @@ Multiple Anchor versions are available through the overlay under `pkgs.anchor.<v
 
 | Version | Anchor | Agave | Platform Tools (default) |
 |---------|--------|-------|--------------------------|
-| `1.0.0` (default) | 1.0.0 | 3.1.10 | v1.52 |
+| `1.0.2` (default) | 1.0.2 | 3.1.10 | v1.52 |
 | `0.32.1` | 0.32.1 | 2.3.13 | v1.48 |
 
 ```nix
 # Via overlay
-pkgs.anchor."1.0.0".anchor-cli
+pkgs.anchor."1.0.2".anchor-cli
 pkgs.anchor."0.32.1".anchor-cli
 
 # Top-level aliases point to the default version
-pkgs.anchor-cli         # = pkgs.anchor."1.0.0".anchor-cli
-pkgs.buildAnchorProgram # = pkgs.anchor."1.0.0".buildAnchorProgram
+pkgs.anchor-cli         # = pkgs.anchor."1.0.2".anchor-cli
+pkgs.buildAnchorProgram # = pkgs.anchor."1.0.2".buildAnchorProgram
 ```
 
 ### Configurable platform-tools version
@@ -39,8 +39,8 @@ pkgs.buildAnchorProgram # = pkgs.anchor."1.0.0".buildAnchorProgram
 Each Anchor version ships with a default platform-tools version, but you can override it with `withPlatformTools`. Supported versions: v1.48 through v1.54.
 
 ```nix
-# Use 1.0.0 with platform-tools v1.48 instead of the default v1.52
-pkgs.anchor."1.0.0".withPlatformTools."v1.48".buildAnchorProgram {
+# Use 1.0.2 with platform-tools v1.48 instead of the default v1.52
+pkgs.anchor."1.0.2".withPlatformTools."v1.48".buildAnchorProgram {
   pname = "my-program";
   src = ./.;
   cargoLock = { lockFile = ./Cargo.lock; };
@@ -52,14 +52,14 @@ pkgs.anchor."1.0.0".withPlatformTools."v1.48".buildAnchorProgram {
 Each Anchor version defaults to a specific Agave version for the SBF SDK. Override it with `withAgave`:
 
 ```nix
-# Use 1.0.0 with a different Agave version and SBF SDK hash
-pkgs.anchor."1.0.0".withAgave {
+# Use 1.0.2 with a different Agave version and SBF SDK hash
+pkgs.anchor."1.0.2".withAgave {
   agaveVersion = "2.3.13";
   sbfSdkHash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
 }
 
 # Combine with withPlatformTools
-pkgs.anchor."1.0.0".withPlatformTools."v1.48".withAgave {
+pkgs.anchor."1.0.2".withPlatformTools."v1.48".withAgave {
   agaveVersion = "2.3.13";
   sbfSdkHash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
 }
@@ -93,7 +93,7 @@ solana --version
       };
     in {
       devShells.${system} = {
-        # Default version (1.0.0)
+        # Default version (1.0.2)
         default = pkgs.mkShell {
           packages = [
             pkgs.anchor-cli
@@ -133,7 +133,7 @@ solana --version
       };
     in {
       packages.${system} = {
-        # Default version (1.0.0)
+        # Default version (1.0.2)
         default = pkgs.buildAnchorProgram {
           pname = "my-program";
           src = ./.;

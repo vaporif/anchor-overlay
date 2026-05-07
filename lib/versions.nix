@@ -1,16 +1,16 @@
 {
-  default-version = "1.0.0";
+  default-version = "1.0.2";
 
-  "1.0.0" = {
+  "1.0.2" = {
     anchor = {
       src = {
         owner = "solana-foundation";
         repo = "anchor";
-        tag = "v1.0.0";
+        tag = "v1.0.2";
         hash = "sha256-Y5452JSBAH+GkAJ57cDjup3vyMzPac+xvNAE+W81Ong=";
         fetchSubmodules = true;
       };
-      patches = ["1.0.0.patch"];
+      patches = ["1.0.2.patch"];
       rustVersion = "1.88.0";
       idlRustVersion = "1.89.0";
     };
