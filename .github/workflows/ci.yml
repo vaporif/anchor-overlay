@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["v0.32.1", "v1"]
+        anchor-version: ["0.32.1", "1.0.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["v0.32.1", "v1"]
+        anchor-version: ["0.32.1", "1.0.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -62,7 +62,7 @@ jobs:
             system: aarch64-linux
           - runner: macos-latest
             system: aarch64-darwin
-          - anchor-version: "v1"
+          - anchor-version: "1.0.0"
             build-flags: "--ignore-keys"
 
     runs-on: ${{ matrix.runner }}
@@ -84,7 +84,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        anchor-version: ["v0.32.1", "v1"]
+        anchor-version: ["0.32.1", "1.0.0"]
         arch:
           - runner: ubuntu-latest
             system: x86_64-linux
