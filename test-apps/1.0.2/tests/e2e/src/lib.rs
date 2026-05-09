@@ -18,7 +18,7 @@ mod tests {
         time::Duration,
     };
 
-    const PROGRAM_ID: &str = "GVXHCbeuKKgTs2EbD7jtZr63DeNggWB4X5w6tHBnnpeS";
+    const PROGRAM_ID: &str = "4vCKvTn1Fy7ePz7yZzaASsMB1m62oMZRectQR9JhhCf9";
 
     fn find_free_port() -> u16 {
         std::net::TcpListener::bind("127.0.0.1:0")
