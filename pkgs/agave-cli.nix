@@ -30,6 +30,11 @@
       "x86_64-apple-darwin" = "sha256-cHph7beo0ChVn9HdJ5ZtZ3dK1Ml6Yc1m7DCJ6KB9VCM=";
       "aarch64-apple-darwin" = "sha256-g5aT1AvdC9dtlWn33z04+zvGmqUCj8YL7zqpSO7kU6U=";
     };
+    "4.1.2" = {
+      "x86_64-unknown-linux-gnu" = "sha256-WZHQJ6aG60GacJpHkXizPrg1Aeiiv79ZmoGihr/L93A=";
+      "x86_64-apple-darwin" = "sha256-62eP5QXKRw1LR0oKkqHW3WwAyV30fuTYygcS/nqX76E=";
+      "aarch64-apple-darwin" = "sha256-UaRDGOb7i+DPppzf2zJS9MdqXrKGZ0BpTpHePS/Fp1s=";
+    };
   };
 in
   stdenv.mkDerivation {

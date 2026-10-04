@@ -6,6 +6,7 @@
   solana-platform-tools,
   anchor-cli,
   jq,
+  sbfArch ? null,
 }: {
   pname,
   src,
@@ -15,89 +16,92 @@
   idl ? true,
   cargoExtraArgs ? [],
   env ? {},
-}:
-stdenv.mkDerivation ({
-    inherit pname version src;
+  arch ? sbfArch,
+}: let
+  target = import ../lib/sbf-target.nix arch;
+in
+  stdenv.mkDerivation ({
+      inherit pname version src;
 
-    nativeBuildInputs = [
-      cargo
-      rustPlatform.cargoSetupHook
-      anchor-cli
-      jq
-    ];
+      nativeBuildInputs = [
+        cargo
+        rustPlatform.cargoSetupHook
+        anchor-cli
+        jq
+      ];
 
-    cargoDeps = rustPlatform.importCargoLock cargoLock;
+      cargoDeps = rustPlatform.importCargoLock cargoLock;
 
-    dontStrip = true;
+      dontStrip = true;
 
-    buildPhase = let
-      pt = solana-platform-tools;
-      extraArgs = builtins.concatStringsSep " " cargoExtraArgs;
-    in ''
-      runHook preBuild
+      buildPhase = let
+        pt = solana-platform-tools;
+        extraArgs = builtins.concatStringsSep " " cargoExtraArgs;
+      in ''
+        runHook preBuild
 
-      export SBF_SDK_PATH="${pt.sbfSdk}"
-      export PATH="${pt.platformTools}/rust/bin:$PATH"
+        export SBF_SDK_PATH="${pt.sbfSdk}"
+        export PATH="${pt.platformTools}/rust/bin:$PATH"
 
-      cargo build \
-        --manifest-path programs/${programName}/Cargo.toml \
-        --target sbf-solana-solana \
-        --release \
-        ${extraArgs}
-
-      # Move artifacts to target/deploy/ (anchor convention)
-      mkdir -p target/deploy
-      cp target/sbf-solana-solana/release/${builtins.replaceStrings ["-"] ["_"] programName}.so \
-        target/deploy/
-
-      runHook postBuild
-    '';
-
-    installPhase = let
-      deployName = builtins.replaceStrings ["-"] ["_"] programName;
-    in ''
-      runHook preInstall
-
-      mkdir -p $out
-
-      cp target/deploy/${deployName}.so $out/
-
-      if [ -f target/deploy/${deployName}-keypair.json ]; then
-        cp target/deploy/${deployName}-keypair.json $out/
-      fi
-
-      ${lib.optionalString idl ''
-        # Generate IDL using anchor's idl-build feature
-        export ANCHOR_IDL_BUILD_PROGRAM_PATH="programs/${programName}"
-        export ANCHOR_IDL_BUILD_RESOLUTION="TRUE"
-        export ANCHOR_IDL_BUILD_NO_DOCS="FALSE"
-        export ANCHOR_IDL_BUILD_SKIP_LINT="TRUE"
-        export RUSTFLAGS="-A warnings"
-
-        idl_output=$(cargo test \
+        cargo build \
           --manifest-path programs/${programName}/Cargo.toml \
-          --features idl-build \
-          --lib \
-          __anchor_private_print_idl \
-          -- \
-          --show-output \
-          --quiet \
-          --test-threads=1 2>&1) || true
+          --target ${target} \
+          --release \
+          ${extraArgs}
 
-        idl_json=$(echo "$idl_output" | awk '
-          BEGIN { in_program=0; program="" }
-          /--- IDL begin program ---/ { in_program=1; next }
-          /--- IDL end program ---/ { in_program=0; next }
-          in_program { program = program $0 "\n" }
-          END { printf "%s", program }
-        ')
+        # Move artifacts to target/deploy/ (anchor convention)
+        mkdir -p target/deploy
+        cp target/${target}/release/${builtins.replaceStrings ["-"] ["_"] programName}.so \
+          target/deploy/
 
-        if [ -n "$idl_json" ] && [ "$(echo "$idl_json" | tr -d '[:space:]')" != "" ]; then
-          echo "$idl_json" | ${jq}/bin/jq . > $out/${deployName}.json
+        runHook postBuild
+      '';
+
+      installPhase = let
+        deployName = builtins.replaceStrings ["-"] ["_"] programName;
+      in ''
+        runHook preInstall
+
+        mkdir -p $out
+
+        cp target/deploy/${deployName}.so $out/
+
+        if [ -f target/deploy/${deployName}-keypair.json ]; then
+          cp target/deploy/${deployName}-keypair.json $out/
         fi
-      ''}
 
-      runHook postInstall
-    '';
-  }
-  // env)
+        ${lib.optionalString idl ''
+          # Generate IDL using anchor's idl-build feature
+          export ANCHOR_IDL_BUILD_PROGRAM_PATH="programs/${programName}"
+          export ANCHOR_IDL_BUILD_RESOLUTION="TRUE"
+          export ANCHOR_IDL_BUILD_NO_DOCS="FALSE"
+          export ANCHOR_IDL_BUILD_SKIP_LINT="TRUE"
+          export RUSTFLAGS="-A warnings"
+
+          idl_output=$(cargo test \
+            --manifest-path programs/${programName}/Cargo.toml \
+            --features idl-build \
+            --lib \
+            __anchor_private_print_idl \
+            -- \
+            --show-output \
+            --quiet \
+            --test-threads=1 2>&1) || true
+
+          idl_json=$(echo "$idl_output" | awk '
+            BEGIN { in_program=0; program="" }
+            /--- IDL begin program ---/ { in_program=1; next }
+            /--- IDL end program ---/ { in_program=0; next }
+            in_program { program = program $0 "\n" }
+            END { printf "%s", program }
+          ')
+
+          if [ -n "$idl_json" ] && [ "$(echo "$idl_json" | tr -d '[:space:]')" != "" ]; then
+            echo "$idl_json" | ${jq}/bin/jq . > $out/${deployName}.json
+          fi
+        ''}
+
+        runHook postInstall
+      '';
+    }
+    // env)

@@ -145,4 +145,67 @@
       };
     };
   };
+
+  "v1.55" = {
+    archives = {
+      x86_64-darwin = {
+        name = "platform-tools-osx-x86_64.tar.bz2";
+        hash = "sha256-1ce0kIYRWWl2kDnvnJgbx2i/DuZNswIkHEUlurn+/3g=";
+      };
+      aarch64-darwin = {
+        name = "platform-tools-osx-aarch64.tar.bz2";
+        hash = "sha256-XLvm9Zj7kRqVwxvW6gic3ig5QVJbXyG04K+tQ8/CBE8=";
+      };
+      x86_64-linux = {
+        name = "platform-tools-linux-x86_64.tar.bz2";
+        hash = "sha256-R5MweL75D+7tWOMilDxucOXXxN9tsOkIWfUlEsjMras=";
+      };
+      aarch64-linux = {
+        name = "platform-tools-linux-aarch64.tar.bz2";
+        hash = "sha256-3hAEeLU5iQYl9xignnqf7YzW41ktcF3Pmzcoz7Plpg8=";
+      };
+    };
+  };
+
+  "v1.56" = {
+    archives = {
+      x86_64-darwin = {
+        name = "platform-tools-osx-x86_64.tar.bz2";
+        hash = "sha256-gX7YsOpjuSoq5Sq5G93j0bK706KLqM4997V1iHlBkvA=";
+      };
+      aarch64-darwin = {
+        name = "platform-tools-osx-aarch64.tar.bz2";
+        hash = "sha256-V8xbbnaQzf9m/pquj1SivCKD+nZsIH3fss3hwt1BXus=";
+      };
+      x86_64-linux = {
+        name = "platform-tools-linux-x86_64.tar.bz2";
+        hash = "sha256-r9rW4GcpQrANafxR694NGCybntIeB4NX/O21D5Idri0=";
+      };
+      aarch64-linux = {
+        name = "platform-tools-linux-aarch64.tar.bz2";
+        hash = "sha256-DSTiwxNWDRz1LxiXZ1XVg7uOJ29tRykqylsxSq4YCLc=";
+      };
+    };
+  };
+
+  "v1.57" = {
+    archives = {
+      x86_64-darwin = {
+        name = "platform-tools-osx-x86_64.tar.bz2";
+        hash = "sha256-5vYjGxSeZK1swSYF0PmTQFzlWGKqREBsAjVjFZ+MPK8=";
+      };
+      aarch64-darwin = {
+        name = "platform-tools-osx-aarch64.tar.bz2";
+        hash = "sha256-SMMsLsOsNym1yvH91sQUVJYSXt8EOyZisFhr+8kys0o=";
+      };
+      x86_64-linux = {
+        name = "platform-tools-linux-x86_64.tar.bz2";
+        hash = "sha256-sPevEErfcm//KmoJ6i6y8tKWXJIpX01ziMCNFA4MKwA=";
+      };
+      aarch64-linux = {
+        name = "platform-tools-linux-aarch64.tar.bz2";
+        hash = "sha256-8vMckyXLLQAkTfI7ShoJBOUYGc7EnTkjWj7T7iMgN10=";
+      };
+    };
+  };
 }

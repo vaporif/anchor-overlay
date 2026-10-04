@@ -13,6 +13,7 @@
   crane,
   solana-platform-tools,
   anchorConfig,
+  sbfArch ? null,
 }: let
   anchorVersion = anchorConfig.src.tag;
   cleanVersion = lib.removePrefix "v" anchorVersion;
@@ -59,23 +60,32 @@
 
   pt = solana-platform-tools.platformTools;
 
+  sbfTarget = import ../lib/sbf-target.nix;
+
   # Thin cargo-build-sbf shim that uses platform-tools directly
   cargoBuildSbf = writeShellScriptBin "cargo-build-sbf" ''
     export PATH="${pt}/rust/bin:$PATH"
     MANIFEST_PATH=""
+    TARGET="${sbfTarget sbfArch}"
     EXTRA_ARGS=()
     while [[ $# -gt 0 ]]; do
       case "$1" in
         --manifest-path) MANIFEST_PATH="$2"; shift 2 ;;
         --no-rustup-override|--skip-tools-install) shift ;;
         --tools-version) shift 2 ;;
+        --arch)
+          case "$2" in
+            v0) TARGET="sbpf-solana-solana" ;;
+            *) TARGET="sbpf$2-solana-solana" ;;
+          esac
+          shift 2 ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
       esac
     done
     exec cargo build \
       ''${MANIFEST_PATH:+--manifest-path "$MANIFEST_PATH"} \
-      --target sbf-solana-solana \
+      --target "$TARGET" \
       --release \
       "''${EXTRA_ARGS[@]}"
   '';
