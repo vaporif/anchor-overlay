@@ -31,6 +31,7 @@
     in {
       default = pkgs.anchor."1.2.0".buildAnchorProgram buildArgs;
       my-program = pkgs.anchor."1.2.0".buildAnchorProgram buildArgs;
+      my-program-v2 = pkgs.anchor."1.2.0".buildAnchorProgram (buildArgs // {arch = "v2";});
     });
 
     devShells = forAllSystems (system: let
@@ -44,7 +45,7 @@
             anchor-cli
             solana-rust
           ])
-          ++ pkgs.lib.optionals (builtins.elem system ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]) [
+          ++ pkgs.lib.optionals (system != "aarch64-linux") [
             pkgs.anchor."1.2.0".agave-cli
           ];
       };

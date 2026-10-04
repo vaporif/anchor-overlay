@@ -22,8 +22,8 @@
       url = "https://github.com/anza-xyz/platform-tools/releases/download/${version}/${archive.name}";
       inherit (archive) hash;
     };
-    nativeBuildInputs = lib.optionals stdenv.isLinux [autoPatchelfHook];
-    buildInputs = lib.optionals stdenv.isLinux [libgcc.lib zlib openssl];
+    nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [autoPatchelfHook];
+    buildInputs = lib.optionals stdenv.hostPlatform.isLinux [libgcc.lib zlib openssl];
     # liblldb.so (LLVM debugger) has many deps not needed for SBF compilation
     autoPatchelfIgnoreMissingDeps = [
       "libpython3.10.so.1.0"
@@ -50,6 +50,8 @@
       url =
         if sbfSdkUrl != null
         then sbfSdkUrl
+        else if lib.versionAtLeast agaveVersion "4"
+        then throw "Agave ${agaveVersion} does not ship sbf-sdk; pass sbfSdkUrl pointing at an anza-xyz/cargo-build-sbf release"
         else "https://github.com/anza-xyz/agave/releases/download/v${agaveVersion}/sbf-sdk.tar.bz2";
       hash = sbfSdkHash;
     };

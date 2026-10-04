@@ -93,7 +93,7 @@ pkgs.buildAnchorProgram # = pkgs.anchor."1.2.0".buildAnchorProgram
 
 ### Platform tools
 
-Use `withPlatformTools` to pick another platform-tools version. Supported: v1.48 to v1.57.
+Use `withPlatformTools` to pick another platform-tools version. Supported: v1.48 to v1.57. v1.53+ only ship the `sbpf*` targets (v1.52 and older lack `sbpfv3`), so legacy `sbf-solana-solana` builds need ≤ v1.52 and SBPF v3 builds need ≥ v1.53.
 
 ```nix
 # 1.0.2 with platform-tools v1.48 instead of v1.52
@@ -106,7 +106,7 @@ pkgs.anchor."1.0.2".withPlatformTools."v1.48".buildAnchorProgram {
 
 ### SBPF architecture
 
-Anchor 1.2.0 builds for SBPF v3 by default. On the CLI, change it with `anchor build --arch <v0..v4>`. In Nix, pass `arch` to `buildAnchorProgram`:
+Anchor 1.2.0 builds for SBPF v3 by default, which needs platform-tools v1.53 or newer. On the CLI, change it with `anchor build --arch <v0..v3>`. In Nix, pass `arch` to `buildAnchorProgram`:
 
 ```nix
 pkgs.anchor."1.2.0".buildAnchorProgram {

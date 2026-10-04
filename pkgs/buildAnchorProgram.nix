@@ -43,6 +43,11 @@ in
         export SBF_SDK_PATH="${pt.sbfSdk}"
         export PATH="${pt.platformTools}/rust/bin:$PATH"
 
+        if [ ! -d "${pt.platformTools}/rust/lib/rustlib/${target}" ]; then
+          echo "platform-tools ${pt.platformTools.version} has no ${target} target; pick a newer withPlatformTools or another arch" >&2
+          exit 1
+        fi
+
         cargo build \
           --manifest-path programs/${programName}/Cargo.toml \
           --target ${target} \

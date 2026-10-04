@@ -43,7 +43,7 @@
           (with pkgs.anchor."0.32.1"; [
             anchor-cli
           ])
-          ++ pkgs.lib.optionals (builtins.elem system ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]) [
+          ++ pkgs.lib.optionals (system != "aarch64-linux") [
             pkgs.anchor."0.32.1".agave-cli
           ];
       };
