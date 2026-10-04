@@ -10,44 +10,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  fmt:
+  flake-check:
     runs-on: ubuntu-latest
-    name: fmt
+    name: flake-check
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@v23
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
       - name: Check formatting and lib tests
         run: nix flake check
-
-  check:
-    strategy:
-      fail-fast: false
-      matrix:
-        runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["0.32.1", "1.0.2", "1.2.0"]
-        include:
-          - runner: ubuntu-latest
-            system: x86_64-linux
-          - runner: ubuntu-24.04-arm
-            system: aarch64-linux
-          - runner: macos-latest
-            system: aarch64-darwin
-
-    runs-on: ${{ matrix.runner }}
-    name: check (${{ matrix.system }}, ${{ matrix.anchor-version }})
-
-    steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
-
-      - name: Build anchor-cli
-        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".anchor-cli' -L
-
-      - name: Build solana-rust
-        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-rust' -L
 
   build:
     strategy:
@@ -66,47 +42,56 @@ jobs:
             build-flags: "--ignore-keys"
           - anchor-version: "1.2.0"
             build-flags: "--ignore-keys"
+          - runner: ubuntu-latest
+            anchor-version: "1.2.0"
+            extra-package: my-program-v2
 
     runs-on: ${{ matrix.runner }}
     name: build (${{ matrix.system }}, ${{ matrix.anchor-version }})
+    timeout-minutes: 90
 
     steps:
       - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@v23
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
+
+      - name: Build anchor-cli
+        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".anchor-cli' -L
+
+      - name: Build solana-rust
+        run: nix build '.#legacyPackages.${{ matrix.system }}."${{ matrix.anchor-version }}".solana-rust' -L
 
       - name: Build test program via overlay
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
 
-      - name: Build test program for non-default SBPF arch
-        if: matrix.anchor-version == '1.2.0' && matrix.system == 'x86_64-linux'
-        run: nix build ./test-apps/1.2.0#my-program-v2 -L
+      - name: Build extra test package
+        if: matrix.extra-package
+        run: nix build ./test-apps/${{ matrix.anchor-version }}#${{ matrix.extra-package }} -L
 
       - name: Build test program via devshell
         run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build ${{ matrix.build-flags }}'
 
   e2e:
+    # Runs after build so anchor-cli comes from the warm Nix cache instead of being rebuilt
     needs: [build]
     strategy:
       fail-fast: false
       matrix:
         anchor-version: ["0.32.1", "1.0.2", "1.2.0"]
-        arch:
-          - runner: ubuntu-latest
-            system: x86_64-linux
 
-    runs-on: ${{ matrix.arch.runner }}
-    name: e2e (${{ matrix.arch.system }}, ${{ matrix.anchor-version }})
+    runs-on: ubuntu-latest
+    name: e2e (x86_64-linux, ${{ matrix.anchor-version }})
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@v23
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
 
       - name: Build program via overlay
         run: |
           PROGRAM_SO_PATH=$(nix build ./test-apps/${{ matrix.anchor-version }}#my-program --print-out-paths --no-link)/my_program.so
-          echo "PROGRAM_SO_PATH=$PROGRAM_SO_PATH" >> $GITHUB_ENV
+          echo "PROGRAM_SO_PATH=$PROGRAM_SO_PATH" >> "$GITHUB_ENV"
 
       - name: Run e2e tests
         run: |
@@ -128,11 +113,12 @@ jobs:
 
     runs-on: ${{ matrix.runner }}
     name: check-pt-override (${{ matrix.system }})
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/nix-installer-action@v23
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
 
       - name: Build platform-tools v1.48
         run: nix build '.#legacyPackages.${{ matrix.system }}."0.32.1".withPlatformTools."v1.48".solana-rust' -L
