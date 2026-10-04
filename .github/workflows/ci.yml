@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - name: Check formatting
+      - name: Check formatting and lib tests
         run: nix flake check
 
   check:
@@ -77,6 +77,10 @@ jobs:
 
       - name: Build test program via overlay
         run: nix build ./test-apps/${{ matrix.anchor-version }}#default -L
+
+      - name: Build test program for non-default SBPF arch
+        if: matrix.anchor-version == '1.2.0' && matrix.system == 'x86_64-linux'
+        run: nix build ./test-apps/1.2.0#my-program-v2 -L
 
       - name: Build test program via devshell
         run: nix develop ./test-apps/${{ matrix.anchor-version }} -c sh -c 'cd test-apps/${{ matrix.anchor-version }} && anchor build ${{ matrix.build-flags }}'

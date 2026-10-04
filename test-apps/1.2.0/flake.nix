@@ -31,6 +31,7 @@
     in {
       default = pkgs.anchor."1.2.0".buildAnchorProgram buildArgs;
       my-program = pkgs.anchor."1.2.0".buildAnchorProgram buildArgs;
+      my-program-v2 = pkgs.anchor."1.2.0".buildAnchorProgram (buildArgs // {arch = "v2";});
     });
 
     devShells = forAllSystems (system: let
