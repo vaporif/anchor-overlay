@@ -48,15 +48,15 @@ in
 
     sourceRoot = "solana-release";
 
-    nativeBuildInputs = lib.optionals stdenv.isLinux [autoPatchelfHook];
-    buildInputs = lib.optionals stdenv.isLinux [
+    nativeBuildInputs = lib.optionals stdenv.hostPlatform.isLinux [autoPatchelfHook];
+    buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
       zlib
       stdenv.cc.cc.lib
       openssl
       systemdLibs
     ];
 
-    autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.isLinux [
+    autoPatchelfIgnoreMissingDeps = lib.optionals stdenv.hostPlatform.isLinux [
       "libOpenCL.so.1"
       "libsgx_uae_service.so"
       "libsgx_urts.so"

@@ -75,14 +75,18 @@
         --tools-version) shift 2 ;;
         --arch)
           case "$2" in
-            v0) TARGET="sbpf-solana-solana" ;;
-            *) TARGET="sbpf$2-solana-solana" ;;
+            ${lib.concatMapStringsSep "\n        " (a: ''${a}) TARGET="${sbfTarget a}" ;;'') ["v0" "v1" "v2" "v3" "v4"]}
+            *) echo "cargo-build-sbf: unknown --arch '$2'" >&2; exit 1 ;;
           esac
           shift 2 ;;
         --) shift; EXTRA_ARGS+=("$@"); break ;;
         *) EXTRA_ARGS+=("$1"); shift ;;
       esac
     done
+    if [ ! -d "${pt}/rust/lib/rustlib/$TARGET" ]; then
+      echo "cargo-build-sbf: platform-tools ${pt.version} has no $TARGET target" >&2
+      exit 1
+    fi
     exec cargo build \
       ''${MANIFEST_PATH:+--manifest-path "$MANIFEST_PATH"} \
       --target "$TARGET" \
@@ -99,7 +103,7 @@
     cargoExtraArgs = "--bin=anchor";
 
     nativeBuildInputs = [perl pkg-config makeWrapper];
-    buildInputs = [openssl] ++ lib.optionals stdenv.isLinux [udev];
+    buildInputs = [openssl] ++ lib.optionals stdenv.hostPlatform.isLinux [udev];
 
     OPENSSL_NO_VENDOR = 1;
     doCheck = false;

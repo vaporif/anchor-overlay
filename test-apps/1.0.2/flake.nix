@@ -44,7 +44,7 @@
             anchor-cli
             solana-rust
           ])
-          ++ pkgs.lib.optionals (builtins.elem system ["x86_64-linux" "x86_64-darwin" "aarch64-darwin"]) [
+          ++ pkgs.lib.optionals (system != "aarch64-linux") [
             pkgs.anchor."1.0.2".agave-cli
           ];
       };
