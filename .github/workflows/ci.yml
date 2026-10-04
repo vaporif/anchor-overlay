@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["0.32.1", "1.0.2"]
+        anchor-version: ["0.32.1", "1.0.2", "1.2.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-        anchor-version: ["0.32.1", "1.0.2"]
+        anchor-version: ["0.32.1", "1.0.2", "1.2.0"]
         include:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -63,6 +63,8 @@ jobs:
           - runner: macos-latest
             system: aarch64-darwin
           - anchor-version: "1.0.2"
+            build-flags: "--ignore-keys"
+          - anchor-version: "1.2.0"
             build-flags: "--ignore-keys"
 
     runs-on: ${{ matrix.runner }}
@@ -84,7 +86,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        anchor-version: ["0.32.1", "1.0.2"]
+        anchor-version: ["0.32.1", "1.0.2", "1.2.0"]
         arch:
           - runner: ubuntu-latest
             system: x86_64-linux
@@ -133,3 +135,6 @@ jobs:
 
       - name: Build platform-tools v1.54
         run: nix build '.#legacyPackages.${{ matrix.system }}."0.32.1".withPlatformTools."v1.54".solana-rust' -L
+
+      - name: Build platform-tools v1.57
+        run: nix build '.#legacyPackages.${{ matrix.system }}."0.32.1".withPlatformTools."v1.57".solana-rust' -L

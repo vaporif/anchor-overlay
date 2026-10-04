@@ -10,6 +10,7 @@
   archives,
   agaveVersion,
   sbfSdkHash,
+  sbfSdkUrl ? null,
 }: let
   archive = archives.${stdenv.hostPlatform.system}
     or (throw "Unsupported platform: ${stdenv.hostPlatform.system}");
@@ -46,7 +47,10 @@
     pname = "solana-sbf-sdk";
     version = agaveVersion;
     src = fetchurl {
-      url = "https://github.com/anza-xyz/agave/releases/download/v${agaveVersion}/sbf-sdk.tar.bz2";
+      url =
+        if sbfSdkUrl != null
+        then sbfSdkUrl
+        else "https://github.com/anza-xyz/agave/releases/download/v${agaveVersion}/sbf-sdk.tar.bz2";
       hash = sbfSdkHash;
     };
     unpackPhase = ''
