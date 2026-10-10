@@ -1,0 +1,20 @@
+[toolchain]
+anchor_version = "1.2.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+my_program = "4vCKvTn1Fy7ePz7yZzaASsMB1m62oMZRectQR9JhhCf9"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[hooks]
+
+[test]
+startup_wait = 5000
+shutdown_wait = 2000
+upgradeable = false

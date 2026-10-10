@@ -1,0 +1,54 @@
+{
+  description = "Solana Anchor test program";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    anchor-overlay.url = "path:../..";
+  };
+
+  outputs = {
+    nixpkgs,
+    anchor-overlay,
+    ...
+  }: let
+    systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+    pkgsFor = system:
+      import nixpkgs {
+        inherit system;
+        overlays = [anchor-overlay.overlays.default];
+      };
+  in {
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+
+    packages = forAllSystems (system: let
+      pkgs = pkgsFor system;
+      buildArgs = {
+        pname = "my-program";
+        src = ./.;
+        cargoLock = {lockFile = ./Cargo.lock;};
+      };
+    in {
+      default = pkgs.anchor."1.2.1".buildAnchorProgram buildArgs;
+      my-program = pkgs.anchor."1.2.1".buildAnchorProgram buildArgs;
+      my-program-v2 = pkgs.anchor."1.2.1".buildAnchorProgram (buildArgs // {arch = "v2";});
+    });
+
+    devShells = forAllSystems (system: let
+      pkgs = pkgsFor system;
+    in {
+      default = pkgs.mkShell {
+        buildInputs = [pkgs.openssl];
+        nativeBuildInputs = [pkgs.pkg-config];
+        packages =
+          (with pkgs.anchor."1.2.1"; [
+            anchor-cli
+            solana-rust
+          ])
+          ++ pkgs.lib.optionals (system != "aarch64-linux") [
+            pkgs.anchor."1.2.1".agave-cli
+          ];
+      };
+    });
+  };
+}
