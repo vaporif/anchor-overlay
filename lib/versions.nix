@@ -1,5 +1,31 @@
 {
-  default-version = "1.2.0";
+  default-version = "1.2.1";
+
+  "1.2.1" = {
+    anchor = {
+      src = {
+        owner = "otter-sec";
+        repo = "anchor";
+        tag = "v1.2.1";
+        hash = "sha256-C8e0ELa0q8xOat1F8Br8+XPimxgUZ0sBu2MH8cVlzME=";
+        fetchSubmodules = true;
+      };
+      patches = ["1.2.1.patch"];
+      rustVersion = "1.99.0";
+      idlRustVersion = "1.99.0";
+    };
+
+    platform-tools = {
+      version = "v1.57";
+      arch = "v3";
+      agaveVersion = "4.1.2";
+      sbfSdk = {
+        # Agave 4.x no longer ships sbf-sdk; it moved to anza-xyz/cargo-build-sbf
+        url = "https://github.com/anza-xyz/cargo-build-sbf/releases/download/sbf-sdk%40v4.1.0/sbf-sdk.tar.bz2";
+        hash = "sha256-lD/+oNXvaUUXAWAboyglqUl4p1DQzvSBEvfdSA+8Ego=";
+      };
+    };
+  };
 
   "1.2.0" = {
     anchor = {

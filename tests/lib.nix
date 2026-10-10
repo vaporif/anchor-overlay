@@ -21,14 +21,14 @@ pkgs: let
     };
 
     testWithAgave4RequiresUrl = {
-      expr = evalsOk (sbfSdkFor "1.2.0" {
+      expr = evalsOk (sbfSdkFor "1.2.1" {
         agaveVersion = "4.1.2";
         sbfSdkHash = lib.fakeHash;
       });
       expected = false;
     };
     testWithAgave4WithUrl = {
-      expr = evalsOk (sbfSdkFor "1.2.0" {
+      expr = evalsOk (sbfSdkFor "1.2.1" {
         agaveVersion = "4.1.2";
         sbfSdkUrl = "https://example.invalid/sbf-sdk.tar.bz2";
         sbfSdkHash = lib.fakeHash;

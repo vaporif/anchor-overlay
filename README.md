@@ -29,18 +29,19 @@ Each Anchor version lives under `pkgs.anchor.<version>`. Top-level names point t
 
 | Version | Agave | Platform tools | SBPF arch |
 |---------|-------|----------------|-----------|
-| `1.2.0` (default) | 4.1.2 | v1.57 | v3 |
+| `1.2.1` (default) | 4.1.2 | v1.57 | v3 |
+| `1.2.0` | 4.1.2 | v1.57 | v3 |
 | `1.0.2` | 3.1.10 | v1.52 | legacy (`sbf-solana-solana`) |
 | `0.32.1` | 2.3.13 | v1.52 | legacy (`sbf-solana-solana`) |
 
-Anchor moved from `solana-foundation/anchor` to [`otter-sec/anchor`](https://github.com/otter-sec/anchor). Version `1.2.0` comes from the new repo.
+Anchor moved from `solana-foundation/anchor` to [`otter-sec/anchor`](https://github.com/otter-sec/anchor). Versions `1.2.0` and later come from the new repo.
 
 ```nix
-pkgs.anchor."1.2.0".anchor-cli
+pkgs.anchor."1.2.1".anchor-cli
 pkgs.anchor."0.32.1".anchor-cli
 
-pkgs.anchor-cli         # = pkgs.anchor."1.2.0".anchor-cli
-pkgs.buildAnchorProgram # = pkgs.anchor."1.2.0".buildAnchorProgram
+pkgs.anchor-cli         # = pkgs.anchor."1.2.1".anchor-cli
+pkgs.buildAnchorProgram # = pkgs.anchor."1.2.1".buildAnchorProgram
 ```
 
 ## Use in a flake
@@ -106,10 +107,10 @@ pkgs.anchor."1.0.2".withPlatformTools."v1.48".buildAnchorProgram {
 
 ### SBPF architecture
 
-Anchor 1.2.0 builds for SBPF v3 by default, which needs platform-tools v1.53 or newer. On the CLI, change it with `anchor build --arch <v0..v3>`. In Nix, pass `arch` to `buildAnchorProgram`:
+Anchor 1.2.x builds for SBPF v3 by default, which needs platform-tools v1.53 or newer. On the CLI, change it with `anchor build --arch <v0..v3>`. In Nix, pass `arch` to `buildAnchorProgram`:
 
 ```nix
-pkgs.anchor."1.2.0".buildAnchorProgram {
+pkgs.anchor."1.2.1".buildAnchorProgram {
   pname = "my-program";
   src = ./.;
   cargoLock = { lockFile = ./Cargo.lock; };
@@ -127,7 +128,7 @@ pkgs.anchor."1.0.2".withAgave {
   sbfSdkHash = "sha256-zdGtFHxj/I4ID3RN3BNx27LakxzhwOuvSZpVb3M93YM=";
 }
 
-pkgs.anchor."1.2.0".withAgave {
+pkgs.anchor."1.2.1".withAgave {
   agaveVersion = "4.1.2";
   sbfSdkUrl = "https://github.com/anza-xyz/cargo-build-sbf/releases/download/sbf-sdk%40v4.3.0/sbf-sdk.tar.bz2";
   sbfSdkHash = "sha256-53Fq5OkvsMByKkn8zESnhx3YYi+vcRFesQVikU2rVNo=";
