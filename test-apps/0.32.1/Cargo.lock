@@ -2652,7 +2652,7 @@ dependencies = [
  "quinn-proto",
  "quinn-udp",
  "rustc-hash",
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "socket2 0.6.3",
  "thiserror 2.0.18",
  "tokio",
@@ -2674,7 +2674,7 @@ dependencies = [
  "rand_pcg",
  "ring",
  "rustc-hash",
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "rustls-pki-types",
  "rustls-platform-verifier",
  "slab",
@@ -2994,9 +2994,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.43"
+version = "0.23.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0283386ce02abc0151e1761d08802dfe86c173b0b494af5cbc086574e453da06"
+checksum = "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
 dependencies = [
  "once_cell",
  "ring",
@@ -3048,7 +3048,7 @@ dependencies = [
  "jni",
  "log",
  "once_cell",
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "rustls-native-certs",
  "rustls-platform-verifier-android",
  "rustls-webpki 0.103.15",
@@ -4521,7 +4521,7 @@ dependencies = [
  "log",
  "quinn",
  "quinn-proto",
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "solana-connection-cache",
  "solana-keypair",
  "solana-measure",
@@ -5035,7 +5035,7 @@ dependencies = [
  "quinn",
  "quinn-proto",
  "rand 0.8.8",
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "smallvec",
  "socket2 0.5.10",
  "solana-keypair",
@@ -5177,7 +5177,7 @@ version = "2.2.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3699c06092641439f1679d4e015153c504abb660f7cc71eba4836d8cfc41649f"
 dependencies = [
- "rustls 0.23.43",
+ "rustls 0.23.45",
  "solana-keypair",
  "solana-pubkey",
  "solana-signer",
